@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HALF_EXPANDED
@@ -13,13 +14,14 @@ import com.example.scalableviewtest.adapter.ItemsAdapter
 import com.example.scalableviewtest.databinding.XischeBottomsheetBinding
 import com.example.scalableviewtest.utils.Config
 import com.example.scalableviewtest.utils.StackLayoutManager
+import com.example.scalableviewtest.utils.YStackLayoutManager
 
 class ScalableView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     private var _topView: View? = null
-    private var lm: StackLayoutManager? = null
+    private var lm: LinearLayoutManager? = null
 
     private var binding: XischeBottomsheetBinding? =
         XischeBottomsheetBinding.inflate(LayoutInflater.from(context), this, true)

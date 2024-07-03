@@ -48,7 +48,6 @@ class StackLayoutManager(private val recyclerView: RecyclerView) :
     private var mMinVelocityX = 0
     private val mVelocityTracker: VelocityTracker = VelocityTracker.obtain()
     private var pointerId = 0
-    private var mRV: RecyclerView? = null
     private var sSetScrollState: Method? = null
     private var mPendingScrollPosition = DiffResult.NO_POSITION
     private var previousWidth = -1
@@ -58,6 +57,7 @@ class StackLayoutManager(private val recyclerView: RecyclerView) :
     private var totalHeight = 0
 
     constructor(config: Config, recyclerView: RecyclerView) : this(recyclerView) {
+        Log.i(TAG, "config = $config")
         this.maxStackCount = config.maxStackCount
         this.mSpace = config.space
         this.initialStackCount = config.initialStackCount
@@ -67,10 +67,12 @@ class StackLayoutManager(private val recyclerView: RecyclerView) :
     }
 
     override fun isAutoMeasureEnabled(): Boolean {
+        Log.i(TAG, "isAutoMeasureEnabled")
         return true
     }
 
     override fun onLayoutChildren(recycler: Recycler, state: RecyclerView.State) {
+        Log.i(TAG, "onLayoutChildren   state = $state")
         if (itemCount <= 0) return
         this.recycler = recycler
 
@@ -107,6 +109,7 @@ class StackLayoutManager(private val recyclerView: RecyclerView) :
         }
 
     private fun simulateScrollOnResize() {
+        Log.i(TAG, "simulateScrollOnResize  ")
         val scrollDelta = calculateScrollDelta()
         if (scrollDelta != 0) {
             if (enableResizeAnimation) {
@@ -129,6 +132,7 @@ class StackLayoutManager(private val recyclerView: RecyclerView) :
     }
 
     private fun calculateScrollDelta(): Int {
+        Log.i(TAG, "calculateScrollDelta  ")
         val newWidth = width
         val newHeight = height
         if (previousWidth == -1 || previousHeight == -1) {
@@ -147,6 +151,7 @@ class StackLayoutManager(private val recyclerView: RecyclerView) :
     }
 
     private fun resolveInitialOffset(): Int {
+        Log.i(TAG, "resolveInitialOffset  ")
         var offset = initialStackCount * mUnit
         if (mPendingScrollPosition != DiffResult.NO_POSITION) {
             offset = mPendingScrollPosition * mUnit
@@ -157,6 +162,7 @@ class StackLayoutManager(private val recyclerView: RecyclerView) :
 
     override fun onLayoutCompleted(state: RecyclerView.State) {
         super.onLayoutCompleted(state)
+        Log.i(TAG, "onLayoutCompleted $state ")
         if (itemCount <= 0) return
         if (!initial) {
             fill(recycler, initialOffset, false)
@@ -165,6 +171,7 @@ class StackLayoutManager(private val recyclerView: RecyclerView) :
     }
 
     private fun setInitialHeight() {
+        Log.i(TAG, "setInitialHeight ")
         if (isInitialHeightSet) return
         totalHeight = mItemHeight + (maxStackCount * mSpace) + mSpace
         val params = recyclerView.layoutParams
@@ -176,21 +183,25 @@ class StackLayoutManager(private val recyclerView: RecyclerView) :
     override fun onAdapterChanged(
         oldAdapter: RecyclerView.Adapter<*>?, newAdapter: RecyclerView.Adapter<*>?
     ) {
+        Log.i(TAG, "onAdapterChanged ")
         initial = false
         mTotalOffset = 0
     }
 
     private fun fill(recycler: Recycler?, dy: Int, apply: Boolean): Int {
+        Log.i(TAG, "fill  $dy - apply = $apply ")
         var delta = dy
         if (apply) delta = (delta * parallex).toInt()
         return fillFromTop(recycler, -delta)
     }
 
     private fun fill(recycler: Recycler?, dy: Int): Int {
+        Log.i(TAG, "fill  $dy ")
         return fill(recycler, dy, true)
     }
 
     private fun fillFromTop(recycler: Recycler?, dy: Int): Int {
+        Log.i(TAG, "fillFromTop  $dy ")
         if (mTotalOffset + dy < 0 || (mTotalOffset + dy + 0f) / mUnit > itemCount - 1) return 0
         detachAndScrapAttachedViews(recycler!!)
         mTotalOffset += dy
@@ -224,6 +235,7 @@ class StackLayoutManager(private val recyclerView: RecyclerView) :
     }
 
     private val mTouchListener = View.OnTouchListener { v, event ->
+        Log.i(TAG, "mTouchListener  $event ")
         mVelocityTracker.addMovement(event)
         if (event.action == MotionEvent.ACTION_DOWN) {
             if (animator != null && animator!!.isRunning) animator!!.cancel()
@@ -248,6 +260,7 @@ class StackLayoutManager(private val recyclerView: RecyclerView) :
 
     private val mOnFlingListener: OnFlingListener = object : OnFlingListener() {
         override fun onFling(velocityX: Int, velocityY: Int): Boolean {
+            Log.i(TAG, "OnFlingListener  onFling ")
             val o = mTotalOffset % mUnit
             val s = mUnit - o
             val scrollX: Int
@@ -269,25 +282,28 @@ class StackLayoutManager(private val recyclerView: RecyclerView) :
     }
 
     private fun absMax(a: Int, b: Int): Int {
+        Log.i(TAG, "absMax ")
         return if (abs(a.toDouble()) > abs(b.toDouble())) a
         else b
     }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onAttachedToWindow(view: RecyclerView) {
+        Log.i(TAG, "onAttachedToWindow ")
         super.onAttachedToWindow(view)
-        mRV = view
         view.setOnTouchListener(mTouchListener)
         view.onFlingListener = mOnFlingListener
     }
 
     private fun computeSettleDuration(distance: Int, xvel: Float): Int {
+        Log.i(TAG, "computeSettleDuration ")
         val sWeight = 0.5f * distance / mUnit
         val velWeight = if (xvel > 0) 0.5f * mMinVelocityX / xvel else 0f
         return ((sWeight + velWeight) * duration).toInt()
     }
 
     private fun brewAndStartAnimator(dur: Int, finalXorY: Int) {
+        Log.i(TAG, "brewAndStartAnimator ")
         animator =
             ObjectAnimator.ofInt(this@StackLayoutManager, "animateValue", 0, finalXorY).apply {
                 duration = dur.toLong()
@@ -305,6 +321,7 @@ class StackLayoutManager(private val recyclerView: RecyclerView) :
     }
 
     private fun alpha(position: Int): Float {
+        Log.i(TAG, "alpha alpha $position")
         val alpha: Float
         val currPos = mTotalOffset / mUnit
         val n = (mTotalOffset + .0f) / mUnit
@@ -316,6 +333,7 @@ class StackLayoutManager(private val recyclerView: RecyclerView) :
     }
 
     private fun scale(position: Int): Float {
+        Log.i(TAG, "scale scale $position")
         val scale: Float
         val currPos = this.mTotalOffset / mUnit
         val n = (mTotalOffset + .0f) / mUnit
@@ -339,6 +357,7 @@ class StackLayoutManager(private val recyclerView: RecyclerView) :
     }
 
     private fun left(position: Int): Int {
+        Log.i(TAG, "left left $position")
         val currPos = mTotalOffset / mUnit
         val tail = mTotalOffset % mUnit
         val n = (mTotalOffset + .0f) / mUnit
@@ -348,7 +367,7 @@ class StackLayoutManager(private val recyclerView: RecyclerView) :
 
     private fun ltr(position: Int, currPos: Int, tail: Int, x: Float): Int {
         var left: Int
-
+        Log.i(TAG, "ltr ltr $position")
         if (position <= currPos) {
             left = if (position == currPos) {
                 (mSpace * (maxStackCount - x)).toInt()
@@ -370,21 +389,24 @@ class StackLayoutManager(private val recyclerView: RecyclerView) :
     }
 
     private fun recycleVertically(view: View?, dy: Int): Boolean {
+        Log.i(TAG, "recycleVertically")
         return view != null && (view.top - dy < 0)
     }
 
     override fun scrollVerticallyBy(dy: Int, recycler: Recycler, state: RecyclerView.State?): Int {
+        Log.i(TAG, "scrollVerticallyBy")
         return fill(recycler, -dy)
     }
 
     private fun setScrollStateIdle() {
+        Log.i(TAG, "setScrollStateIdle")
         try {
             if (sSetScrollState == null) sSetScrollState =
                 RecyclerView::class.java.getDeclaredMethod(
                     "setScrollState", Int::class.javaPrimitiveType
                 )
             sSetScrollState!!.isAccessible = true
-            sSetScrollState!!.invoke(mRV, RecyclerView.SCROLL_STATE_IDLE)
+            sSetScrollState!!.invoke(recyclerView, RecyclerView.SCROLL_STATE_IDLE)
         } catch (e: NoSuchMethodException) {
             e.printStackTrace()
         } catch (e: IllegalAccessException) {
@@ -395,6 +417,9 @@ class StackLayoutManager(private val recyclerView: RecyclerView) :
     }
 
     override fun scrollToPosition(position: Int) {
+        Log.i(
+            TAG, "position is $position but itemCount is $itemCount"
+        )
         if (position > itemCount - 1) {
             Log.i(
                 TAG, "position is $position but itemCount is $itemCount"
@@ -413,6 +438,6 @@ class StackLayoutManager(private val recyclerView: RecyclerView) :
     }
 
     companion object {
-        private const val TAG = "StackLayoutManager"
+        private const val TAG = "StackLayoutYOUSSEF"
     }
 }
