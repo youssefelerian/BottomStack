@@ -1,17 +1,19 @@
 package com.example.scalableviewtest.utils
 
-import android.content.Context
 import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
 import kotlin.math.pow
 
 
-class YScrollLinearLayoutManager(context: Context,private val config: Config) : LinearLayoutManager(context) {
+class YScrollLinearLayoutManager(
+    private val recyclerView: RecyclerView,
+    private val config: Config
+) :
+    LinearLayoutManager(recyclerView.context) {
     private val overlapThreshold = config.maxStackCount
-    private val overlapOffset = 30f
+    private val overlapOffset = config.space
 
     private var mItemWidth = 0
     private var mItemHeight = 0
@@ -24,6 +26,7 @@ class YScrollLinearLayoutManager(context: Context,private val config: Config) : 
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
             applyOverlappingMode()
+
         }
 
     }
@@ -40,7 +43,8 @@ class YScrollLinearLayoutManager(context: Context,private val config: Config) : 
             measureChildWithMargins(anchorView, 0, 0)
             mItemWidth = anchorView.measuredWidth
             mItemHeight = anchorView.measuredHeight
-        } catch (e: Exception) {
+
+        } catch (_: Exception) {
 
         }
 
@@ -48,28 +52,53 @@ class YScrollLinearLayoutManager(context: Context,private val config: Config) : 
 
     private fun applyOverlappingMode() {
         val firstPosition = findFirstVisibleItemPosition()
-        val lastVisibleItemPosition = findLastVisibleItemPosition()
         var firstOverlapThreshold = 0
         for (count in 0 until childCount) {
             val position = count + firstPosition
             val child = getChildAt(count)
-
-            if (position > (lastVisibleItemPosition - overlapThreshold) && position <= lastVisibleItemPosition + 1) {
-
-                if (child != null) {
-                    val newY =
-                        ((count * overlapOffset) + (firstOverlapThreshold * (mItemHeight / 2)))
-                    child.translationY = -newY
-                    child.scaleX = 0.99.pow(count).toFloat()
-                    child.scaleY = 0.97.pow(count).toFloat()
-                    child.alpha = 0.9f
-                    child.z = (-position * 2).toFloat()
-                }
+            if (isLastItemsVisible(position) && !isLastItemsInList(position)) {
                 firstOverlapThreshold++
+                changeScaleAndPosition(
+                    child = child,
+                    count = count,
+                    position = position,
+                    firstOverlapThreshold = firstOverlapThreshold
+                )
+
             } else {
-                // Log.w("YYYYYYYYYY", "position = $position  -- resetLayout")
                 resetLayout(child)
             }
+        }
+    }
+
+    private fun isLastItemsVisible(position: Int): Boolean {
+        val lastVisibleItemPosition = findLastVisibleItemPosition()
+        val isLastItemsVisible =
+            position > (lastVisibleItemPosition - overlapThreshold) && position <= lastVisibleItemPosition + 1
+        return isLastItemsVisible
+    }
+
+    private fun isLastItemsInList(position: Int): Boolean {
+        val isLastItemsInList = position + overlapThreshold >= itemCount
+        return isLastItemsInList
+    }
+
+    private fun newY(firstOverlapThreshold: Int): Float {
+        return ((mItemHeight * 3 / 4) * firstOverlapThreshold + (firstOverlapThreshold - 1 * overlapOffset)).toFloat()
+    }
+
+    private fun changeScaleAndPosition(
+        child: View?,
+        count: Int,
+        position: Int,
+        firstOverlapThreshold: Int
+    ) {
+        if (child != null) {
+            child.translationY = -newY(firstOverlapThreshold)
+            child.scaleX = 0.99.pow(count).toFloat()
+            child.scaleY = 0.97.pow(count).toFloat()
+            child.alpha = 0.9f
+            child.z = (-position * 2).toFloat()
         }
     }
 
