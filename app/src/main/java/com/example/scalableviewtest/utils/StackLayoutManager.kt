@@ -202,14 +202,17 @@ class StackLayoutManager(private val recyclerView: RecyclerView) :
 
     private fun fillFromTop(recycler: Recycler?, dy: Int): Int {
         Log.i(TAG, "fillFromTop  $dy ")
+        Log.w("YOUUUUUUU", "dy = $dy")
         if (mTotalOffset + dy < 0 || (mTotalOffset + dy + 0f) / mUnit > itemCount - 1) return 0
         detachAndScrapAttachedViews(recycler!!)
         mTotalOffset += dy
+        Log.w("YOUUUUUUU", "mTotalOffset = $mTotalOffset")
         val count = childCount
         for (i in 0 until count) {
             val child = getChildAt(i)
             if (recycleVertically(child, dy)) removeAndRecycleView(child!!, recycler)
         }
+        Log.w("YOUUUUUUU", "count = $count")
         val currPos = mTotalOffset / mUnit
         val leavingSpace = height - (left(currPos) + mUnit)
         val itemCountAfterBaseItem = leavingSpace / mUnit + 2
@@ -217,17 +220,19 @@ class StackLayoutManager(private val recyclerView: RecyclerView) :
         val start = if (currPos - maxStackCount >= 0) currPos - maxStackCount else 0
         val end = if (e >= itemCount) itemCount - 1 else e
         val left = width / 2 - mItemWidth / 2
+        Log.w("YOUUUUUUU", "currPos = $currPos - itemCountAfterBaseItem")
         for (i in start..end) {
             val view = recycler.getViewForPosition(i)
+            Log.w("YOUUUUUUU", "getViewForPosition = $i")
             val scale = scale(i)
-            val alpha = alpha(i)
+           // val alpha = alpha(i)
             addView(view)
             measureChildWithMargins(view, 0, 0)
-            val top = (left(i) - (1 - scale) * view.measuredHeight / 2).toInt()
+            val top =(left(i) - (1 - scale) * view.measuredHeight / 2).toInt()
             val right = view.measuredWidth + left
             val bottom = view.measuredHeight + top
             layoutDecoratedWithMargins(view, left, top, right, bottom)
-            view.alpha = alpha
+            //view.alpha = alpha
             view.scaleY = scale
             view.scaleX = scale
         }
@@ -320,7 +325,7 @@ class StackLayoutManager(private val recyclerView: RecyclerView) :
             }
     }
 
-    private fun alpha(position: Int): Float {
+   /* private fun alpha(position: Int): Float {
         Log.i(TAG, "alpha alpha $position")
         val alpha: Float
         val currPos = mTotalOffset / mUnit
@@ -330,12 +335,12 @@ class StackLayoutManager(private val recyclerView: RecyclerView) :
             1 - (n - position) / maxStackCount
         }
         return if (alpha <= 0.001f) 0f else alpha
-    }
+    }*/
 
     private fun scale(position: Int): Float {
-        Log.i(TAG, "scale scale $position")
         val scale: Float
         val currPos = this.mTotalOffset / mUnit
+
         val n = (mTotalOffset + .0f) / mUnit
         val x = n - currPos
         scale = if (position >= currPos) {
@@ -353,6 +358,7 @@ class StackLayoutManager(private val recyclerView: RecyclerView) :
                 1f - scaleRatio * (n - currPos + currPos - position) / maxStackCount
             }
         }
+        Log.w("YOUUUUUUUGGGGGG", "position = $position  - mTotalOffset = $mTotalOffset  -  mUnit= $mUnit   - currPos = $currPos   - scale = $scale")
         return scale
     }
 

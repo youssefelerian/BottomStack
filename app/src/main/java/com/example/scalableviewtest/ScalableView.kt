@@ -13,8 +13,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HALF_EX
 import com.example.scalableviewtest.adapter.ItemsAdapter
 import com.example.scalableviewtest.databinding.XischeBottomsheetBinding
 import com.example.scalableviewtest.utils.Config
-import com.example.scalableviewtest.utils.StackLayoutManager
-import com.example.scalableviewtest.utils.YStackLayoutManager
+import com.example.scalableviewtest.utils.YScrollLinearLayoutManager
 
 class ScalableView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -48,16 +47,25 @@ class ScalableView @JvmOverloads constructor(
     }
 
     fun setAdapter(adapter: ItemsAdapter) = binding?.rv?.let {
-        lm = StackLayoutManager(
-            Config(
+        lm = YScrollLinearLayoutManager(
+            context, Config(
                 space = 50,
                 maxStackCount = 3,
                 initialStackCount = 2,
                 scaleRatio = 0.4f,
                 secondaryScale = 1f,
                 parallax = 2f
+            )
+        ) /*YStackLayoutManager(
+            Config(
+                space = 50,
+                maxStackCount = 1,
+                initialStackCount = 2,
+                scaleRatio = 0.4f,
+                secondaryScale = 1f,
+                parallax = 2f
             ), it
-        )
+        )*/
         it.adapter = adapter
         it.layoutManager = lm
         it.layoutParams.width = LayoutParams.MATCH_PARENT
