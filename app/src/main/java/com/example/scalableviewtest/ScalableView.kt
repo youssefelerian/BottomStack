@@ -13,7 +13,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HALF_EX
 import com.example.scalableviewtest.adapter.ItemsAdapter
 import com.example.scalableviewtest.databinding.XischeBottomsheetBinding
 import com.example.scalableviewtest.utils.Config
-import com.example.scalableviewtest.utils.YScrollLinearLayoutManager
+
 import com.example.scalableviewtest.utils.YStackLayoutManager
 
 class ScalableView @JvmOverloads constructor(
@@ -48,11 +48,11 @@ class ScalableView @JvmOverloads constructor(
     }
 
     fun setAdapter(adapter: ItemsAdapter) = binding?.rv?.let {
-        lm = YScrollLinearLayoutManager(
+        lm = YStackLayoutManager(
             it, Config(
                 space = 50,
                 maxStackCount = 3,
-                initialStackCount = 2,
+                initialStackCount = 1,
                 scaleRatio = 0.4f,
                 secondaryScale = 1f,
                 parallax = 2f

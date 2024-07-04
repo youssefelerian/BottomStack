@@ -320,7 +320,7 @@ class YStackLayoutManager(recyclerView: RecyclerView, private val config: Config
 }
 
 
-class StartSnapHelper : LinearSnapHelper() {
+private class StartSnapHelper : LinearSnapHelper() {
     override fun calculateDistanceToFinalSnap(
         layoutManager: RecyclerView.LayoutManager,
         targetView: View
