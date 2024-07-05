@@ -1,4 +1,4 @@
-package com.example.scalableviewtest.utils
+package com.example.scalableviewtest.utils.start
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnFlingListener
 import androidx.recyclerview.widget.RecyclerView.Recycler
+import com.example.scalableviewtest.utils.Config
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import kotlin.math.abs

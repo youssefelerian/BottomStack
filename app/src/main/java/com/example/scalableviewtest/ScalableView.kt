@@ -14,7 +14,7 @@ import com.example.scalableviewtest.adapter.ItemsAdapter
 import com.example.scalableviewtest.databinding.XischeBottomsheetBinding
 import com.example.scalableviewtest.utils.Config
 
-import com.example.scalableviewtest.utils.YStackLayoutManager
+import com.example.scalableviewtest.utils.start.YStackLayoutManager
 
 class ScalableView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0

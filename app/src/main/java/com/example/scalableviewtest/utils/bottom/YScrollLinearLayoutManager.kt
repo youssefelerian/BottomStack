@@ -1,9 +1,9 @@
-package com.example.scalableviewtest.utils
+package com.example.scalableviewtest.utils.bottom
 
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.scalableviewtest.utils.Config
 import kotlin.math.pow
 
 

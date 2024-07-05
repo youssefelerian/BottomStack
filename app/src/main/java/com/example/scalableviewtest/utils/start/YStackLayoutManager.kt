@@ -1,4 +1,4 @@
-package com.example.scalableviewtest.utils
+package com.example.scalableviewtest.utils.start
 
 import android.graphics.Rect
 import android.util.ArrayMap
@@ -6,10 +6,9 @@ import android.util.SparseArray
 import android.util.SparseBooleanArray
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.example.scalableviewtest.utils.Config
 import kotlin.math.min
-
 
 class YStackLayoutManager(recyclerView: RecyclerView, private val config: Config) :
     LinearLayoutManager(recyclerView.context) {
@@ -60,20 +59,20 @@ class YStackLayoutManager(recyclerView: RecyclerView, private val config: Config
         for (i in 0 until itemCount) {
 
             val viewType = adapter?.getItemViewType(i)
-            var itemHeight =0
+            var itemHeight = 0
             if (viewTypeHeightMap.containsKey(viewType)) {
-                itemHeight = viewTypeHeightMap[viewType] ?:0
+                itemHeight = viewTypeHeightMap[viewType] ?: 0
             } else {
-                 recycler?.getViewForPosition(i)?.let {itemView->
-                     addView(itemView)
-                     measureChildWithMargins(
-                         itemView,
-                         View.MeasureSpec.UNSPECIFIED,
-                         View.MeasureSpec.UNSPECIFIED
-                     )
-                     itemHeight = getDecoratedMeasuredHeight(itemView)
-                     viewTypeHeightMap[viewType] = itemHeight
-                 }
+                recycler?.getViewForPosition(i)?.let { itemView ->
+                    addView(itemView)
+                    measureChildWithMargins(
+                        itemView,
+                        View.MeasureSpec.UNSPECIFIED,
+                        View.MeasureSpec.UNSPECIFIED
+                    )
+                    itemHeight = getDecoratedMeasuredHeight(itemView)
+                    viewTypeHeightMap[viewType] = itemHeight
+                }
             }
 
             val rect = Rect()
@@ -316,23 +315,5 @@ class YStackLayoutManager(recyclerView: RecyclerView, private val config: Config
 
     companion object {
         const val TAG = "YStackLayoutManager"
-    }
-}
-
-
-private class StartSnapHelper : LinearSnapHelper() {
-    override fun calculateDistanceToFinalSnap(
-        layoutManager: RecyclerView.LayoutManager,
-        targetView: View
-    ): IntArray {
-        val out = IntArray(2)
-        out[0] = 0
-        out[1] = (layoutManager as YStackLayoutManager).getSnapHeight()
-        return out
-    }
-
-    override fun findSnapView(layoutManager: RecyclerView.LayoutManager): View? {
-        val custLayoutManager: YStackLayoutManager = layoutManager as YStackLayoutManager
-        return custLayoutManager.findSnapView()
     }
 }
