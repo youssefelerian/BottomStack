@@ -3,20 +3,20 @@ package com.example.scalableviewtest.utils.bottom
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.Recycler
 import com.example.scalableviewtest.utils.Config
 import kotlin.math.pow
 
 
 class YScrollBottomManager(
-    private val recyclerView: RecyclerView,
-    private val config: Config
-) :
-    LinearLayoutManager(recyclerView.context) {
+    private val recyclerView: RecyclerView, private val config: Config
+) : LinearLayoutManager(recyclerView.context) {
     private val overlapThreshold = config.maxStackCount
     private val overlapOffset = config.space
 
     private var mItemWidth = 0
     private var mItemHeight = 0
+    private var recycler: Recycler? = null
 
     init {
         orientation = RecyclerView.VERTICAL
@@ -38,6 +38,7 @@ class YScrollBottomManager(
 
     override fun onLayoutChildren(recycler: RecyclerView.Recycler, state: RecyclerView.State) {
         super.onLayoutChildren(recycler, state)
+        this.recycler = recycler
         try {
             val anchorView = recycler.getViewForPosition(0)
             measureChildWithMargins(anchorView, 0, 0)
@@ -94,11 +95,12 @@ class YScrollBottomManager(
         firstOverlapThreshold: Int
     ) {
         if (child != null) {
+            val newX = 0.99.pow(count).toFloat()
             child.translationY = -newY(firstOverlapThreshold)
-            child.scaleX = 0.99.pow(count).toFloat()
+            child.scaleX = newX
             child.scaleY = 0.97.pow(count).toFloat()
             child.alpha = 0.9f
-            child.z = (-position * 2).toFloat()
+            child.translationZ = (-position * 2).toFloat()
         }
     }
 
@@ -116,7 +118,7 @@ class YScrollBottomManager(
             child.scaleX = 1f
             child.scaleY = 1f
             child.alpha = 1f
-            child.z = 0f
+            child.translationZ = 0f
         }
     }
 }

@@ -2,6 +2,7 @@ package com.example.scalableviewtest.utils.start
 
 import android.graphics.Rect
 import android.util.ArrayMap
+import android.util.Log
 import android.util.SparseArray
 import android.util.SparseBooleanArray
 import android.view.View
@@ -92,18 +93,18 @@ class YStackLayoutManager(recyclerView: RecyclerView, private val config: Config
         }
     }
 
-    override fun findFirstVisibleItemPosition(): Int {
-        val count = locationRects.size()
-        val displayRect = Rect(0, scroll, width, height + scroll)
-        for (i in 0 until count) {
-            if (Rect.intersects(displayRect, locationRects[i]) &&
-                attachedItems[i]
-            ) {
-                return i
-            }
-        }
-        return 0
-    }
+    /* override fun findFirstVisibleItemPosition(): Int {
+         val count = locationRects.size()
+         val displayRect = Rect(0, scroll, width, height + scroll)
+         for (i in 0 until count) {
+             if (Rect.intersects(displayRect, locationRects[i]) &&
+                 attachedItems[i]
+             ) {
+                 return i
+             }
+         }
+         return 0
+     }*/
 
     private fun computeMaxScroll() {
         maxScroll = locationRects[locationRects.size() - 1].bottom - height
@@ -123,6 +124,7 @@ class YStackLayoutManager(recyclerView: RecyclerView, private val config: Config
                 break
             }
         }
+
     }
 
     private fun layoutItemsOnCreate(recycler: RecyclerView.Recycler) {
@@ -145,6 +147,11 @@ class YStackLayoutManager(recyclerView: RecyclerView, private val config: Config
                 if (thisRect.top - scroll > height) {
                     break
                 }
+              /*  Log.w(
+                    TAG,
+                    "layoutItemsOnCreate  pos =$i | itemCount=$itemCount | locationRects = ${locationRects.size()}  |attachedItems=${attachedItems.size()} "
+                )*/
+
             }
         }
     }
@@ -174,7 +181,11 @@ class YStackLayoutManager(recyclerView: RecyclerView, private val config: Config
                     min(firstVisiblePosition.toDouble(), position.toDouble()).toInt()
                 }
 
-                layoutItem(child, locationRects[position]) //更新Item位置
+                layoutItem(child, locationRects[position])
+                Log.w(
+                    TAG,
+                    "layoutItemsOnScroll position =$position | childCount=$childCount | itemCount = $itemCount  |firstVisiblePosition=$firstVisiblePosition | lastVisiblePosition = $lastVisiblePosition"
+                )
             }
         }
 
@@ -200,6 +211,7 @@ class YStackLayoutManager(recyclerView: RecyclerView, private val config: Config
                 break
             }
         }
+
     }
 
     private fun reuseItemOnSroll(position: Int, addViewFromTop: Boolean) {
@@ -216,6 +228,10 @@ class YStackLayoutManager(recyclerView: RecyclerView, private val config: Config
 
         layoutItem(scrap, locationRects[position])
         attachedItems.put(position, true)
+        Log.w(
+            TAG,
+            "reuseItemOnSroll position =$position | addViewFromTop = $addViewFromTop  "
+        )
     }
 
 
@@ -233,6 +249,10 @@ class YStackLayoutManager(recyclerView: RecyclerView, private val config: Config
             child.alpha = rate3
             layoutTop = 0
             layoutBottom = itemHeight
+            Log.w(
+                TAG,
+                "layoutItem1 topDistance=$topDistance | itemHeight = $itemHeight  | layoutBottom = $layoutBottom | rate2 = $rate2"
+            )
         } else {
             child.scaleX = 1f
             child.scaleY = 1f
@@ -242,6 +262,7 @@ class YStackLayoutManager(recyclerView: RecyclerView, private val config: Config
             layoutBottom = rect.bottom - scroll
         }
         layoutDecorated(child, rect.left, layoutTop, rect.right, layoutBottom)
+
     }
 
     override fun canScrollVertically(): Boolean {
@@ -267,7 +288,6 @@ class YStackLayoutManager(recyclerView: RecyclerView, private val config: Config
         if (!state.isPreLayout && childCount > 0) {
             layoutItemsOnScroll()
         }
-
         return travel
     }
 
@@ -290,6 +310,7 @@ class YStackLayoutManager(recyclerView: RecyclerView, private val config: Config
         needSnap = false
 
         val displayRect = Rect(0, scroll, width, height + scroll)
+
         val itemCount = itemCount
         for (i in 0 until itemCount) {
             val itemRect: Rect = locationRects[i]
@@ -307,6 +328,7 @@ class YStackLayoutManager(recyclerView: RecyclerView, private val config: Config
     }
 
     fun findSnapView(): View? {
+
         if (childCount > 0) {
             return getChildAt(0)
         }
@@ -314,6 +336,6 @@ class YStackLayoutManager(recyclerView: RecyclerView, private val config: Config
     }
 
     companion object {
-        const val TAG = "YStackLayoutManager"
+        const val TAG = "YStackLayoutManagerY"
     }
 }
