@@ -67,7 +67,7 @@ class YScrollBottomManager(
                 )
 
             } else {
-                resetLayout(child)
+                resetLayout(child, position)
             }
         }
     }
@@ -95,30 +95,48 @@ class YScrollBottomManager(
         firstOverlapThreshold: Int
     ) {
         if (child != null) {
-            val newX = 0.99.pow(count).toFloat()
-            child.translationY = -newY(firstOverlapThreshold)
-            child.scaleX = newX
-            child.scaleY = 0.97.pow(count).toFloat()
-            child.alpha = 0.9f
-            child.translationZ = (-position * 2).toFloat()
+            val scaleXV = 0.99.pow(count).toFloat()
+            val scaleYV = 0.97.pow(count).toFloat()
+            val translationY = -newY(firstOverlapThreshold)
+            val translationZ = (-position * 2).toFloat()
+            val alpha = 0.9f
+            child.translationY = translationY
+            child.scaleX = scaleXV
+            child.scaleY = scaleYV
+            child.alpha = alpha
+            child.translationZ = translationZ
+           /* removeAndRecycleView(child, recycler!!)
+            val view = recycler!!.getViewForPosition(position)
+            addView(view)
+            measureChildWithMargins(view, 0, 0)*/
         }
     }
 
     private fun resetLayout() {
         for (i in 0 until childCount) {
             val child = getChildAt(i)
-            resetLayout(child)
+            resetLayout(child, i)
 
         }
     }
 
-    private fun resetLayout(child: View?) {
+    private fun resetLayout(child: View?, position: Int) {
         if (child != null) {
+            // if (position == findLastVisibleItemPosition()-1) {
+
+            /* child.animate().translationZ(0f)
+                 .translationY(0f)
+                 .scaleX(1f).scaleY(1f)
+                 .alpha(1f)
+                 .start()*/
+
             child.translationY = 0f
+            child.translationZ = 0f
             child.scaleX = 1f
             child.scaleY = 1f
             child.alpha = 1f
-            child.translationZ = 0f
+            //}
         }
     }
+
 }

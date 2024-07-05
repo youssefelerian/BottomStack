@@ -13,7 +13,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HALF_EX
 import com.example.scalableviewtest.adapter.ItemsAdapter
 import com.example.scalableviewtest.databinding.XischeBottomsheetBinding
 import com.example.scalableviewtest.utils.Config
-import com.example.scalableviewtest.utils.bottom.VegaScrollLayoutManager
 import com.example.scalableviewtest.utils.bottom.YScrollBottomManager
 import com.example.scalableviewtest.utils.start.StackLayoutManager
 
