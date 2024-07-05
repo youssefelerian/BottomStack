@@ -14,7 +14,7 @@ import com.example.scalableviewtest.adapter.ItemsAdapter
 import com.example.scalableviewtest.databinding.XischeBottomsheetBinding
 import com.example.scalableviewtest.utils.Config
 import com.example.scalableviewtest.utils.bottom.YScrollBottomManager
-import com.example.scalableviewtest.utils.start.StackLayoutManager
+import com.example.scalableviewtest.utils.start.YStackLayoutManager
 
 
 class ScalableView @JvmOverloads constructor(
@@ -49,7 +49,7 @@ class ScalableView @JvmOverloads constructor(
     }
 
     fun setAdapter(adapter: ItemsAdapter) = binding?.rv?.let {
-        lm = YScrollBottomManager(
+        lm = YStackLayoutManager(
             it, Config(
                 space = 50,
                 maxStackCount = 3,

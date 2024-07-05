@@ -147,10 +147,6 @@ class YStackLayoutManager(recyclerView: RecyclerView, private val config: Config
                 if (thisRect.top - scroll > height) {
                     break
                 }
-              /*  Log.w(
-                    TAG,
-                    "layoutItemsOnCreate  pos =$i | itemCount=$itemCount | locationRects = ${locationRects.size()}  |attachedItems=${attachedItems.size()} "
-                )*/
 
             }
         }
@@ -182,10 +178,6 @@ class YStackLayoutManager(recyclerView: RecyclerView, private val config: Config
                 }
 
                 layoutItem(child, locationRects[position])
-                Log.w(
-                    TAG,
-                    "layoutItemsOnScroll position =$position | childCount=$childCount | itemCount = $itemCount  |firstVisiblePosition=$firstVisiblePosition | lastVisiblePosition = $lastVisiblePosition"
-                )
             }
         }
 
@@ -228,10 +220,6 @@ class YStackLayoutManager(recyclerView: RecyclerView, private val config: Config
 
         layoutItem(scrap, locationRects[position])
         attachedItems.put(position, true)
-        Log.w(
-            TAG,
-            "reuseItemOnSroll position =$position | addViewFromTop = $addViewFromTop  "
-        )
     }
 
 
@@ -249,10 +237,6 @@ class YStackLayoutManager(recyclerView: RecyclerView, private val config: Config
             child.alpha = rate3
             layoutTop = 0
             layoutBottom = itemHeight
-            Log.w(
-                TAG,
-                "layoutItem1 topDistance=$topDistance | itemHeight = $itemHeight  | layoutBottom = $layoutBottom | rate2 = $rate2"
-            )
         } else {
             child.scaleX = 1f
             child.scaleY = 1f
@@ -293,7 +277,7 @@ class YStackLayoutManager(recyclerView: RecyclerView, private val config: Config
 
     override fun onAttachedToWindow(view: RecyclerView?) {
         super.onAttachedToWindow(view)
-        StartSnapHelper().attachToRecyclerView(view)
+     //   StartSnapHelper().attachToRecyclerView(view)
     }
 
     override fun onScrollStateChanged(state: Int) {

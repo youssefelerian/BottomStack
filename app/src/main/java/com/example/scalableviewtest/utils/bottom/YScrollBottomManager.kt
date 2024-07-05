@@ -105,10 +105,10 @@ class YScrollBottomManager(
             child.scaleY = scaleYV
             child.alpha = alpha
             child.translationZ = translationZ
-           /* removeAndRecycleView(child, recycler!!)
-            val view = recycler!!.getViewForPosition(position)
-            addView(view)
-            measureChildWithMargins(view, 0, 0)*/
+            /* removeAndRecycleView(child, recycler!!)
+             val view = recycler!!.getViewForPosition(position)
+             addView(view)
+             measureChildWithMargins(view, 0, 0)*/
         }
     }
 
