@@ -7,7 +7,7 @@ import com.example.scalableviewtest.utils.Config
 import kotlin.math.pow
 
 
-class YScrollLinearLayoutManager(
+class YScrollBottomManager(
     private val recyclerView: RecyclerView,
     private val config: Config
 ) :
