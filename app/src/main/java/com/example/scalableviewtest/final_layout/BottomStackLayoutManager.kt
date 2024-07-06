@@ -254,30 +254,35 @@ class BottomStackLayoutManager(context: Context, private val config: BottomStack
         val layoutScrollTop = rect.top - scroll
         val layoutScrollBottom = rect.bottom - scroll
         val itemHeight: Int = rect.bottom - rect.top
-        val layoutTopNeed = (itemHeight * (totalVisibleItemCount - 1)) - (itemHeight / 2)
+        val totalItemCount = totalVisibleItemCount - 1
+        val layoutTopNeed = (itemHeight * totalItemCount) - (itemHeight / 2)
+        val isPositionsNotEqualZero = position != 0 && totalVisibleItemCount != 0
 
         val layoutTop: Int
         val layoutBottom: Int
-        if (position != 0 && totalVisibleItemCount != 0 && position + 1 >= totalVisibleItemCount && layoutScrollTop >= layoutTopNeed) {
-
+        if (isPositionsNotEqualZero && position >= totalItemCount && layoutScrollTop >= layoutTopNeed) {
             val rateInit = (layoutScrollTop - layoutTopNeed).toFloat() / itemHeight.toFloat()
             val scaleFactor = 1 - rateInit * rateInit / 3
             val heightRate = (rateInit * itemHeight.toFloat()).toInt()
+
             child.scaleX = scaleFactor
             child.scaleY = scaleFactor
             child.z = -rateInit
+
+            layoutTop = layoutScrollTop - heightRate //- config.space
+            layoutBottom = layoutScrollBottom - heightRate// - config.space
+
             if (config.isAlpha) {
-                val rate3 = 1 - rateInit * rateInit
-                child.alpha = rate3
+                val alphaRate = 1 - rateInit * rateInit
+                child.alpha = alphaRate
             }
-            layoutTop = layoutScrollTop - heightRate - config.space
-            layoutBottom = layoutScrollBottom - heightRate - config.space
 
         } else {
             child.scaleX = 1f
             child.scaleY = 1f
             child.alpha = 1f
             child.z = 0f
+
             layoutTop = layoutScrollTop
             layoutBottom = layoutScrollBottom
         }
@@ -292,6 +297,6 @@ class BottomStackLayoutManager(context: Context, private val config: BottomStack
 
 data class BottomStackConfig(
     val isAlpha: Boolean = false,
-    val stackCount: Int = 1,
-    val space: Int = 40
+    //val stackCount: Int = 2,
+    //  val space: Int = 0
 )

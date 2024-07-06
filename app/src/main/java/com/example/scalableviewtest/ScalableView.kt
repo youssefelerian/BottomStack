@@ -49,11 +49,7 @@ class ScalableView @JvmOverloads constructor(
     }
 
     fun setAdapter(adapter: ItemsAdapter) = binding?.rv?.let {
-        lm = BottomStackLayoutManager(
-            context, BottomStackConfig(
-                isAlpha = true
-            )
-        )
+        lm = BottomStackLayoutManager(context, BottomStackConfig())
         /*
         it, Config(
                 space = 50,
