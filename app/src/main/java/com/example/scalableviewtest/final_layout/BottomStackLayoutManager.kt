@@ -291,37 +291,6 @@ class BottomStackLayoutManager(context: Context, private val config: BottomStack
         super.onScrollStateChanged(state)
     }
 
-    fun getSnapHeight(): Int {
-        if (!needSnap) {
-            return 0
-        }
-        needSnap = false
-
-        val displayRect = Rect(0, scroll, width, height + scroll)
-
-        val itemCount = itemCount
-        for (i in 0 until itemCount) {
-            val itemRect: Rect = locationRects[i]
-            if (displayRect.intersect(itemRect)) {
-                if (lastDy > 0) {
-                    if (i < itemCount - 1) {
-                        val nextRect: Rect = locationRects[i + 1]
-                        return nextRect.top - displayRect.top
-                    }
-                }
-                return itemRect.top - displayRect.top
-            }
-        }
-        return 0
-    }
-
-    fun findSnapView(): View? {
-        if (childCount > 0) {
-            return getChildAt(0)
-        }
-        return null
-    }
-
     companion object {
         const val TAG = "YOUSSEF"
     }
