@@ -3,7 +3,6 @@ package com.example.scalableviewtest.final_layout
 import android.content.Context
 import android.graphics.Rect
 import android.util.ArrayMap
-import android.util.Log
 import android.util.SparseArray
 import android.util.SparseBooleanArray
 import android.view.View
@@ -46,10 +45,7 @@ class BottomStackLayoutManager(context: Context, private val config: BottomStack
 
     override fun onLayoutChildren(recycler: RecyclerView.Recycler, state: RecyclerView.State) {
         this.recycler = recycler
-        Log.w(
-            TAG,
-            "onLayoutChildren = ${state.isPreLayout}  "
-        )
+
         if (state.isPreLayout) {
             return
         }
@@ -274,14 +270,9 @@ class BottomStackLayoutManager(context: Context, private val config: BottomStack
                 val rate3 = 1 - rateInit * rateInit
                 child.alpha = rate3
             }
-            layoutTop = layoutScrollTop - heightRate
-            layoutBottom = layoutScrollBottom - heightRate
+            layoutTop = layoutScrollTop - heightRate - config.space
+            layoutBottom = layoutScrollBottom - heightRate - config.space
 
-            /*if (position == 7)
-                Log.w(
-                    TAG,
-                    "position = ${position + 1}  |  layoutScrollTop = $layoutScrollTop | layoutScrollBottom =$layoutScrollBottom  | reteHeight =$heightRate | rate1=$rateInit"
-                )*/
         } else {
             child.scaleX = 1f
             child.scaleY = 1f
@@ -299,4 +290,8 @@ class BottomStackLayoutManager(context: Context, private val config: BottomStack
     }
 }
 
-data class BottomStackConfig(val isAlpha: Boolean = false)
+data class BottomStackConfig(
+    val isAlpha: Boolean = false,
+    val stackCount: Int = 1,
+    val space: Int = 40
+)
