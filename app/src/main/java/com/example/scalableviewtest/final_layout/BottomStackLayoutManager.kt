@@ -46,14 +46,50 @@ class BottomStackLayoutManager(context: Context, private val config: BottomStack
 
     override fun onLayoutChildren(recycler: RecyclerView.Recycler, state: RecyclerView.State) {
         this.recycler = recycler
+        Log.w(
+            TAG,
+            "onLayoutChildren = ${state.isPreLayout}  "
+        )
         if (state.isPreLayout) {
             return
         }
-
         buildLocationRects()
 
         detachAndScrapAttachedViews(recycler)
         layoutItemsOnCreate(recycler)
+    }
+
+    override fun onScrollStateChanged(state: Int) {
+        if (state == RecyclerView.SCROLL_STATE_DRAGGING) {
+            needSnap = true
+        }
+        super.onScrollStateChanged(state)
+    }
+
+    override fun canScrollVertically(): Boolean {
+        return true
+    }
+
+    override fun scrollVerticallyBy(
+        dy: Int,
+        recycler: RecyclerView.Recycler?,
+        state: RecyclerView.State
+    ): Int {
+        if (itemCount == 0 || dy == 0) {
+            return 0
+        }
+        var travel = dy
+        if (dy + scroll < 0) {
+            travel = -scroll
+        } else if (dy + scroll > maxScroll) {
+            travel = maxScroll - scroll
+        }
+        scroll += travel
+        lastDy = dy
+        if (!state.isPreLayout && childCount > 0) {
+            layoutItemsOnScroll()
+        }
+        return travel
     }
 
     private fun buildLocationRects() {
@@ -241,11 +277,11 @@ class BottomStackLayoutManager(context: Context, private val config: BottomStack
             layoutTop = layoutScrollTop - heightRate
             layoutBottom = layoutScrollBottom - heightRate
 
-            if (position == 7)
+            /*if (position == 7)
                 Log.w(
-                    "YOUSSSSEF",
+                    TAG,
                     "position = ${position + 1}  |  layoutScrollTop = $layoutScrollTop | layoutScrollBottom =$layoutScrollBottom  | reteHeight =$heightRate | rate1=$rateInit"
-                )
+                )*/
         } else {
             child.scaleX = 1f
             child.scaleY = 1f
@@ -256,39 +292,6 @@ class BottomStackLayoutManager(context: Context, private val config: BottomStack
         }
         layoutDecorated(child, rect.left, layoutTop, rect.right, layoutBottom)
 
-    }
-
-    override fun canScrollVertically(): Boolean {
-        return true
-    }
-
-    override fun scrollVerticallyBy(
-        dy: Int,
-        recycler: RecyclerView.Recycler?,
-        state: RecyclerView.State
-    ): Int {
-        if (itemCount == 0 || dy == 0) {
-            return 0
-        }
-        var travel = dy
-        if (dy + scroll < 0) {
-            travel = -scroll
-        } else if (dy + scroll > maxScroll) {
-            travel = maxScroll - scroll
-        }
-        scroll += travel
-        lastDy = dy
-        if (!state.isPreLayout && childCount > 0) {
-            layoutItemsOnScroll()
-        }
-        return travel
-    }
-
-    override fun onScrollStateChanged(state: Int) {
-        if (state == RecyclerView.SCROLL_STATE_DRAGGING) {
-            needSnap = true
-        }
-        super.onScrollStateChanged(state)
     }
 
     companion object {
