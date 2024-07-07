@@ -275,7 +275,7 @@ class YStackLayoutManager(recyclerView: RecyclerView, private val config: Config
 
     override fun onAttachedToWindow(view: RecyclerView?) {
         super.onAttachedToWindow(view)
-     //   StartSnapHelper().attachToRecyclerView(view)
+        //   StartSnapHelper().attachToRecyclerView(view)
     }
 
     override fun onScrollStateChanged(state: Int) {

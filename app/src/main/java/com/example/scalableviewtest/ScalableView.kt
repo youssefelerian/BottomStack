@@ -75,7 +75,7 @@ class ScalableView @JvmOverloads constructor(
         lm = BottomStackLayoutManager(it)
         it.adapter = adapter
         it.layoutManager = lm
-       // setupBottomSheetInitialState(it)
+        // setupBottomSheetInitialState(it)
     }
 
     override fun onDetachedFromWindow() {
