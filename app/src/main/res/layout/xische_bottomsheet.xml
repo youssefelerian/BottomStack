@@ -6,24 +6,25 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/RecyclerViewTop"
+        android:layout_marginBottom="@dimen/RecyclerViewBottom"
+        android:background="@android:color/holo_blue_bright" />
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/RecyclerViewTop"
-            android:layout_marginBottom="@dimen/RecyclerViewBottom"
-            android:background="@android:color/holo_blue_bright" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/bottomSheet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            android:minHeight="@dimen/CardView_peekHeight"
             app:behavior_peekHeight="@dimen/CardView_peekHeight"
             app:cardBackgroundColor="@color/black"
             app:cardCornerRadius="30dp"
