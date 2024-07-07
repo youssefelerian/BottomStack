@@ -26,8 +26,8 @@ class ScalableView @JvmOverloads constructor(
     private var binding: XischeBottomsheetBinding? =
         XischeBottomsheetBinding.inflate(LayoutInflater.from(context), this, true)
 
-    private val recyclerViewTop = resources.getDimension(R.dimen.RecyclerViewTop).toInt()
-    private val recyclerViewBottom = resources.getDimension(R.dimen.RecyclerViewBottom).toInt()
+   // private val recyclerViewTop = resources.getDimension(R.dimen.RecyclerViewTop).toInt()
+   // private val recyclerViewBottom = resources.getDimension(R.dimen.RecyclerViewBottom).toInt()
     private var recyclerViewHeight = 0
 
     private val bottomSheetBehavior: BottomSheetBehavior<FrameLayout>? by lazy {
