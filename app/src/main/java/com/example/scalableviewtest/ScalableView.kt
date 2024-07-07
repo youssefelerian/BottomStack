@@ -44,10 +44,6 @@ class ScalableView @JvmOverloads constructor(
                     params.height =
                         (it.parent.height) - (bottomSheet.height * slideOffset).toInt() - recyclerViewTop - recyclerViewBottom
                     it.rv.layoutParams = params
-                    Log.w(
-                        "YOUUUUUUUUU",
-                        "recyclerView.height =${binding?.rv?.height}  | bottomSheet.height=${(bottomSheet.height)} | slideOffset = $slideOffset "
-                    )
                 }
 
             }
@@ -56,24 +52,20 @@ class ScalableView @JvmOverloads constructor(
 
     }
 
-    private fun setupBottomSheetInitialState(recyclerView: RecyclerView) = binding?.run {
+    /* private fun setupBottomSheetInitialState(recyclerView: RecyclerView) = binding?.run {
         recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                /*((recyclerView.rootView.height.toFloat() - recyclerView.layoutParams.height.toFloat()) / recyclerView.rootView.height.toFloat()).also { expandRatio ->
+               ((recyclerView.rootView.height.toFloat() - recyclerView.layoutParams.height.toFloat()) / recyclerView.rootView.height.toFloat()).also { expandRatio ->
                     bottomSheetBehavior?.halfExpandedRatio =
                         if (expandRatio <= 0F || expandRatio >= 1) 0.1F else expandRatio
                 }
-                bottomSheetBehavior?.state = STATE_HALF_EXPANDED*/
-                Log.w(
-                    "YOUUUUUUUUU",
-                    " recyclerView.height =${recyclerView.height}"
-                )
+                bottomSheetBehavior?.state = STATE_HALF_EXPANDED
                 recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
             }
         })
-    }
+    }*/
 
     fun addContent(content: Int) = binding?.bottomSheet?.run {
         addView(LayoutInflater.from(context).inflate(content, null))
@@ -83,7 +75,7 @@ class ScalableView @JvmOverloads constructor(
         lm = BottomStackLayoutManager(it)
         it.adapter = adapter
         it.layoutManager = lm
-        setupBottomSheetInitialState(it)
+       // setupBottomSheetInitialState(it)
     }
 
     override fun onDetachedFromWindow() {
