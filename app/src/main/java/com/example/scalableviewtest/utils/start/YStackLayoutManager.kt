@@ -2,13 +2,11 @@ package com.example.scalableviewtest.utils.start
 
 import android.graphics.Rect
 import android.util.ArrayMap
-import android.util.Log
 import android.util.SparseArray
 import android.util.SparseBooleanArray
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.scalableviewtest.utils.Config
 import kotlin.math.min
 
 class YStackLayoutManager(recyclerView: RecyclerView, private val config: Config) :

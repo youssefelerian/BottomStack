@@ -3,13 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:orientation="vertical">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp">
 
         <TextView
             android:id="@+id/header"
@@ -32,7 +31,8 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_marginHorizontal="16dp"
+       >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -56,7 +56,7 @@
                         android:id="@+id/payment_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Payments Due"
+                        android:text="Payments Due - 1"
                         android:textColor="@color/white"
                         android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -125,7 +125,7 @@
                         android:id="@+id/payment_title2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Payments Due"
+                        android:text="Payments Due - 2"
                         android:textColor="@color/white"
                         android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -194,7 +194,7 @@
                         android:id="@+id/parking_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Pay for parking"
+                        android:text="Pay for parking - 3"
                         android:textColor="@color/white"
                         android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -249,7 +249,7 @@
                         android:id="@+id/prayer_time_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Prayer Time"
+                        android:text="Prayer Time - 4"
                         android:textColor="@color/white"
                         android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -351,6 +351,130 @@
                             android:textSize="14sp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/maghrib_time" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/prayer_time_card2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="@color/dark_grey"
+                android:layout_marginBottom="100dp"
+                app:cardCornerRadius="16dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/prayer_time_title2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Prayer Time - 5"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/time_till_fajr2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Till Fajr"
+                        android:textColor="@color/white"
+                        android:textSize="32sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/prayer_time_title2" />
+
+                    <TextView
+                        android:id="@+id/time_remaining2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1:11:03"
+                        android:textColor="@color/green"
+                        android:textSize="32sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/time_till_fajr2" />
+
+                    <TextView
+                        android:id="@+id/prayer_location2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Abu Dhabi\nFriday, April 19"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/time_remaining2" />
+
+                    <!-- Prayer times can be another ConstraintLayout if needed -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/fajr_time2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Fajr: 5:15"
+                            android:textColor="@color/white"
+                            android:textSize="14sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/sunrise_time2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Sunrise: 5:30"
+                            android:textColor="@color/white"
+                            android:textSize="14sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/fajr_time2" />
+
+                        <TextView
+                            android:id="@+id/duhr_time2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Duhr: 12:10"
+                            android:textColor="@color/white"
+                            android:textSize="14sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/sunrise_time2" />
+
+                        <TextView
+                            android:id="@+id/asr_time2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Asr: 15:35"
+                            android:textColor="@color/white"
+                            android:textSize="14sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/duhr_time2" />
+
+                        <TextView
+                            android:id="@+id/maghrib_time2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Maghrib: 17:41"
+                            android:textColor="@color/white"
+                            android:textSize="14sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/asr_time2" />
+
+                        <TextView
+                            android:id="@+id/isha_time2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Isha: 18:56"
+                            android:textColor="@color/white"
+                            android:textSize="14sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/maghrib_time2" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>

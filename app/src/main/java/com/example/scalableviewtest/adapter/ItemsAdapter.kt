@@ -6,7 +6,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.scalableviewtest.R
 import com.example.scalableviewtest.databinding.ActionViewBinding
-import com.example.scalableviewtest.model.ItemsModel
+import com.example.scalableviewtest.adapter.model.ItemsModel
 
 
 class ItemsAdapter : RecyclerView.Adapter<ItemsAdapter.ViewHolder>() {

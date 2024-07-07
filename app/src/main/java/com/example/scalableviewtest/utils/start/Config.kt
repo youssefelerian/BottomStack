@@ -1,4 +1,4 @@
-package com.example.scalableviewtest.utils
+package com.example.scalableviewtest.utils.start
 
 import androidx.annotation.FloatRange
 import androidx.annotation.IntRange

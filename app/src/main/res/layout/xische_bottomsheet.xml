@@ -2,30 +2,32 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/parent"
-    android:orientation="vertical"
-    android:background="@android:color/holo_orange_dark"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="false">
+        android:layout_height="match_parent">
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/black"
-            />
-        <FrameLayout
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/RecyclerViewTop"
+            android:layout_marginBottom="@dimen/RecyclerViewBottom"
+            android:background="@android:color/holo_blue_bright" />
+
+        <androidx.cardview.widget.CardView
             android:id="@+id/bottomSheet"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:elevation="0dp"
-            android:fitsSystemWindows="false"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            app:behavior_peekHeight="64dp"
+            app:behavior_peekHeight="@dimen/CardView_peekHeight"
+            app:cardBackgroundColor="@color/black"
+            app:cardCornerRadius="30dp"
+            app:cardElevation="10dp"
             app:layout_behavior="@string/bottom_sheet_behavior" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="RecyclerViewTop">20dp</dimen>
+    <dimen name="RecyclerViewBottom">160dp</dimen>
+    <dimen name="CardView_peekHeight">160dp</dimen>
+</resources>

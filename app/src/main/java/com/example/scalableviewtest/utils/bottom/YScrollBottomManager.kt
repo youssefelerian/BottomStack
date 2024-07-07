@@ -4,7 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Recycler
-import com.example.scalableviewtest.utils.Config
+import com.example.scalableviewtest.utils.start.Config
 import kotlin.math.pow
 
 
