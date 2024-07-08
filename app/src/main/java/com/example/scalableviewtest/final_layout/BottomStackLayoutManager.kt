@@ -38,7 +38,7 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
     private var adapter: RecyclerView.Adapter<*>? = null
     private var recycler: RecyclerView.Recycler? = null
     private var totalVisibleItemCount = 0
-    private var itemWidth = 0
+    private var itemHeight = 0
 
     override fun onAdapterChanged(
         oldAdapter: RecyclerView.Adapter<*>?,
@@ -56,15 +56,15 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
         try {
             val anchorView = recycler.getViewForPosition(0)
             measureChildWithMargins(anchorView, 0, 0)
-            itemWidth = anchorView.measuredHeight
+            itemHeight = anchorView.measuredHeight
             recyclerViewChangeHeight = recyclerView.height
 
             if (recyclerViewDefaultHeight == 0) {
                 recyclerViewDefaultHeight = recyclerView.height
             }
-            if (itemWidth > 0 && recyclerViewChangeHeight > 0) {
+            if (itemHeight > 0 && recyclerViewChangeHeight > 0) {
                 totalVisibleItemCount =
-                    (recyclerViewChangeHeight.toFloat() / itemWidth.toFloat()).toInt() + 1
+                    (recyclerViewChangeHeight.toFloat() / itemHeight.toFloat()).toInt() + 1
             }
         } catch (_: Exception) {
 
@@ -236,9 +236,7 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
         }
 
         for (i in lastVisiblePosition + 1 until itemCount) {
-            if (Rect.intersects(displayRect, locationRects[i]) &&
-                !attachedItems[i]
-            ) {
+            if (Rect.intersects(displayRect, locationRects[i]) && !attachedItems[i]) {
                 reuseItemOnSroll(i, false)
             } else {
                 break
@@ -248,19 +246,20 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
     }
 
     private fun reuseItemOnSroll(position: Int, addViewFromTop: Boolean) {
-        val scrap = recycler!!.getViewForPosition(position)
-        measureChildWithMargins(scrap, 0, 0)
-        scrap.pivotY = 0f
-        scrap.pivotX = (scrap.measuredWidth / 2).toFloat()
+        recycler?.getViewForPosition(position)?.let { scrap ->
+            measureChildWithMargins(scrap, 0, 0)
+            scrap.pivotY = 0f
+            scrap.pivotX = (scrap.measuredWidth / 2).toFloat()
 
-        if (addViewFromTop) {
-            addView(scrap, 0)
-        } else {
-            addView(scrap)
+            if (addViewFromTop) {
+                addView(scrap, 0)
+            } else {
+                addView(scrap)
+            }
+
+            layoutItem(scrap, locationRects[position], position)
+            attachedItems.put(position, true)
         }
-
-        layoutItem(scrap, locationRects[position], position)
-        attachedItems.put(position, true)
     }
 
 
@@ -322,10 +321,10 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
             } else {
                 child.alpha = 1f
             }
-            Log.w(
-                TAG,
-                "positionInStackCount =$positionInStackCount | position =  ${position + 1}  |heightRate=${heightRate + (positionInStackCount * heightRate)} | child.z = ${-rateInit * (positionInStackCount + 1)}   | layoutScrollTop =$layoutScrollTop | rateInit=$rateInit | scaleFactor=$scaleFactor "
-            )
+            /* Log.w(
+                 TAG,
+                 "positionInStackCount =$positionInStackCount | position =  ${position + 1}  |heightRate=${heightRate + (positionInStackCount * heightRate)} | child.z = ${-rateInit * (positionInStackCount + 1)}   | layoutScrollTop =$layoutScrollTop | rateInit=$rateInit | scaleFactor=$scaleFactor "
+             )*/
             return heightRate + (positionInStackCount * heightRate)
         } else {
             resetLayoutItem(child)
@@ -361,10 +360,18 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
         child.z = 0f
     }
 
+
     fun changeRecyclerHeight(slideOffset: Float) {
-        val params = recyclerView.layoutParams
         val scale = 1f - slideOffset
-        if (scale > 0.2f) params.height = (recyclerViewDefaultHeight * scale).toInt()
+        val newHeight = (recyclerViewDefaultHeight * scale).toInt()
+        // val lastPosition = findLastVisibleItemPosition()
+        // val numberOfItems = ((recyclerViewDefaultHeight.toFloat() - newHeight.toFloat()) / itemHeight.toFloat()).toInt() + 1
+        changeRecyclerViewHeight(scale, newHeight)
+    }
+
+    private fun changeRecyclerViewHeight(scale: Float, newHeight: Int) {
+        val params = recyclerView.layoutParams
+        if (scale > 0.2f) params.height = newHeight
         recyclerView.layoutParams = params
     }
 
