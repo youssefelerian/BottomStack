@@ -38,7 +38,7 @@ class ScalableView @JvmOverloads constructor(
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 lm?.changeRecyclerHeight(slideOffset)
-                binding?.rv?.adapter?.notifyItemChanged(10)
+               // binding?.rv?.adapter?.notifyItemChanged(10)
             }
 
         })
@@ -68,7 +68,7 @@ class ScalableView @JvmOverloads constructor(
     fun setAdapter(adapter: ItemsAdapter) = binding?.rv?.let {
         lm = BottomStackLayoutManager(it)
         it.adapter = adapter
-        it.itemAnimator = FadeInFadeOutItemAnimator()
+       // it.itemAnimator = FadeInFadeOutItemAnimator()
         it.layoutManager = lm
         setupBottomSheetInitialState(it)
     }

@@ -314,8 +314,6 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
             if (isAlpha || scaleFactor < 0.7f) {
                 val alphaRate = 1 - rateInit * rateInit
                 child.alpha = alphaRate
-            } else if (isAlpha) {
-                child.alpha = 1f
             }
             return heightRate + (positionInStackCount * heightRate)
         } else {
@@ -349,9 +347,7 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
         child.scaleX = 1f
         child.scaleY = 1f
         child.z = 0f
-        if (isAlpha) {
-            child.alpha = 1f
-        }
+        child.alpha = 1f
     }
 
 

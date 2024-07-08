@@ -8,14 +8,14 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 
 class FadeInFadeOutItemAnimator : SimpleItemAnimator() {
-    private val duration = 100L
+    private val duration = 50L
     override fun animateRemove(holder: RecyclerView.ViewHolder): Boolean {
         val view = holder.itemView
         val fadeOut = ObjectAnimator.ofFloat(view, "alpha", 1f, 0f)
-        fadeOut.setDuration(duration*holder.adapterPosition) // Duration for fade out
+        fadeOut.setDuration(duration) // Duration for fade out
         fadeOut.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
-                //view.alpha = 1f // Reset alpha
+                view.alpha = 1f // Reset alpha
                 dispatchRemoveFinished(holder)
             }
         })
@@ -27,7 +27,7 @@ class FadeInFadeOutItemAnimator : SimpleItemAnimator() {
         val view = holder.itemView
         view.alpha = 0f // Set initial alpha to 0
         val fadeIn = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f)
-        fadeIn.setDuration(duration*holder.adapterPosition) // Duration for fade in
+        fadeIn.setDuration(duration) // Duration for fade in
         fadeIn.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
                 dispatchAddFinished(holder)
