@@ -2,7 +2,6 @@ package com.example.scalableviewtest.final_layout
 
 import android.graphics.Rect
 import android.util.ArrayMap
-import android.util.Log
 import android.util.SparseArray
 import android.util.SparseBooleanArray
 import android.view.View
@@ -279,7 +278,6 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
             val layoutTopNeed = getLayoutTopPosition(layoutScrollTop, layoutTopPositionArray)
             val heightRate =
                 scaleLayoutItem(
-                    position = position,
                     child = child,
                     layoutTopNeedPair = layoutTopNeed,
                     layoutScrollTop = layoutScrollTop,
@@ -298,7 +296,6 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
     }
 
     private fun scaleLayoutItem(
-        position: Int,
         child: View,
         layoutTopNeedPair: Pair<Int, Int>?,
         layoutScrollTop: Int,
@@ -313,18 +310,13 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
             child.scaleX = scaleFactor
             child.scaleY = scaleFactor
             child.z = -rateInit * (positionInStackCount + 1)
-
             //to solve appear item behind
             if (isAlpha || scaleFactor < 0.7f) {
                 val alphaRate = 1 - rateInit * rateInit
                 child.alpha = alphaRate
-            } else {
+            } else if (isAlpha) {
                 child.alpha = 1f
             }
-            /* Log.w(
-                 TAG,
-                 "positionInStackCount =$positionInStackCount | position =  ${position + 1}  |heightRate=${heightRate + (positionInStackCount * heightRate)} | child.z = ${-rateInit * (positionInStackCount + 1)}   | layoutScrollTop =$layoutScrollTop | rateInit=$rateInit | scaleFactor=$scaleFactor "
-             )*/
             return heightRate + (positionInStackCount * heightRate)
         } else {
             resetLayoutItem(child)
@@ -356,16 +348,16 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
     private fun resetLayoutItem(child: View) {
         child.scaleX = 1f
         child.scaleY = 1f
-        child.alpha = 1f
         child.z = 0f
+        if (isAlpha) {
+            child.alpha = 1f
+        }
     }
 
 
     fun changeRecyclerHeight(slideOffset: Float) {
         val scale = 1f - slideOffset
         val newHeight = (recyclerViewDefaultHeight * scale).toInt()
-        // val lastPosition = findLastVisibleItemPosition()
-        // val numberOfItems = ((recyclerViewDefaultHeight.toFloat() - newHeight.toFloat()) / itemHeight.toFloat()).toInt() + 1
         changeRecyclerViewHeight(scale, newHeight)
     }
 
