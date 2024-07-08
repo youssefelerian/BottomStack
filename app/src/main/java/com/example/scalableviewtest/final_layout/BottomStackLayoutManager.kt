@@ -27,6 +27,8 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
         orientation = RecyclerView.VERTICAL
     }
 
+    private var recyclerViewChangeHeight = 0
+    private var recyclerViewDefaultHeight = 0
     private var scroll = 0
     private val locationRects: SparseArray<Rect> = SparseArray<Rect>()
     private val attachedItems = SparseBooleanArray()
@@ -37,7 +39,6 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
     private var recycler: RecyclerView.Recycler? = null
     private var totalVisibleItemCount = 0
     private var itemWidth = 0
-    private var recyclerViewHeight = 0
 
     override fun onAdapterChanged(
         oldAdapter: RecyclerView.Adapter<*>?,
@@ -56,10 +57,14 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
             val anchorView = recycler.getViewForPosition(0)
             measureChildWithMargins(anchorView, 0, 0)
             itemWidth = anchorView.measuredHeight
-            recyclerViewHeight = recyclerView.height
-            if (itemWidth > 0 && recyclerViewHeight > 0) {
+            recyclerViewChangeHeight = recyclerView.height
+
+            if (recyclerViewDefaultHeight == 0) {
+                recyclerViewDefaultHeight = recyclerView.height
+            }
+            if (itemWidth > 0 && recyclerViewChangeHeight > 0) {
                 totalVisibleItemCount =
-                    (recyclerViewHeight.toFloat() / itemWidth.toFloat()).toInt() + 1
+                    (recyclerViewChangeHeight.toFloat() / itemWidth.toFloat()).toInt() + 1
             }
         } catch (_: Exception) {
 
@@ -354,6 +359,13 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
         child.scaleY = 1f
         child.alpha = 1f
         child.z = 0f
+    }
+
+    fun changeRecyclerHeight(slideOffset: Float) {
+        val params = recyclerView.layoutParams
+        val scale = 1f - slideOffset
+        if (scale > 0.2f) params.height = (recyclerViewDefaultHeight * scale).toInt()
+        recyclerView.layoutParams = params
     }
 
     companion object {

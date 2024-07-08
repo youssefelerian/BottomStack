@@ -21,14 +21,10 @@ class ScalableView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
-    private var lm: LinearLayoutManager? = null
+    private var lm: BottomStackLayoutManager? = null
 
     private var binding: XischeBottomsheetBinding? =
         XischeBottomsheetBinding.inflate(LayoutInflater.from(context), this, true)
-
-    // private val recyclerViewTop = resources.getDimension(R.dimen.RecyclerViewTop).toInt()
-    // private val recyclerViewBottom = resources.getDimension(R.dimen.RecyclerViewBottom).toInt()
-    private var recyclerViewHeight = 0
 
     private val bottomSheetBehavior: BottomSheetBehavior<FrameLayout>? by lazy {
         binding?.bottomSheet?.let { BottomSheetBehavior.from(it) }
@@ -40,14 +36,7 @@ class ScalableView @JvmOverloads constructor(
             override fun onStateChanged(bottomSheet: View, newState: Int) {}
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                binding?.let {
-                    val params = it.rv.layoutParams
-                    val scale = 1f - slideOffset
-                    if (scale > 0.2f) params.height = (recyclerViewHeight * scale).toInt()
-                    //  (it.parent.height) - (bottomSheet.height * slideOffset).toInt() - recyclerViewTop - recyclerViewBottom
-                    it.rv.layoutParams = params
-                }
-
+                lm?.changeRecyclerHeight(slideOffset)
             }
 
         })
@@ -55,20 +44,19 @@ class ScalableView @JvmOverloads constructor(
     }
 
     private fun setupBottomSheetInitialState(recyclerView: RecyclerView) = binding?.run {
-        recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {/*((recyclerView.rootView.height.toFloat() - recyclerView.layoutParams.height.toFloat()) / recyclerView.rootView.height.toFloat()).also { expandRatio ->
-                     bottomSheetBehavior?.halfExpandedRatio =
-                         if (expandRatio <= 0F || expandRatio >= 1) 0.1F else expandRatio
-                 }
-                 bottomSheetBehavior?.state = STATE_HALF_EXPANDED*/
-                recyclerViewHeight = recyclerView.height
-                if (recyclerViewHeight > 0) recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(
-                    this
-                )
+        /* recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
+             ViewTreeObserver.OnGlobalLayoutListener {
+             override fun onGlobalLayout() {
+                 ((recyclerView.rootView.height.toFloat() - recyclerView.layoutParams.height.toFloat()) / recyclerView.rootView.height.toFloat()).also { expandRatio ->
+                      bottomSheetBehavior?.halfExpandedRatio =
+                          if (expandRatio <= 0F || expandRatio >= 1) 0.1F else expandRatio
+                  }
+                  bottomSheetBehavior?.state = STATE_HALF_EXPANDED
+
+                recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
             }
-        })
+        })*/
     }
 
     fun addContent(content: Int) = binding?.bottomSheet?.run {
