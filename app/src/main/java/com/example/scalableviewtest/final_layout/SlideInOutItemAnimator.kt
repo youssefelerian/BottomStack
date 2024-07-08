@@ -1,39 +1,38 @@
 package com.example.scalableviewtest.final_layout
 
-
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.animation.ObjectAnimator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 
-class FadeInFadeOutItemAnimator : SimpleItemAnimator() {
-    private val duration = 250L
+class SlideInOutItemAnimator : SimpleItemAnimator() {
+    private val duration = 300L
+
     override fun animateRemove(holder: RecyclerView.ViewHolder): Boolean {
         val view = holder.itemView
-        val fadeOut = ObjectAnimator.ofFloat(view, "alpha", 1f, 0f)
-        fadeOut.setDuration(duration) // Duration for fade out
-        fadeOut.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                //view.alpha = 1f // Reset alpha
-                dispatchRemoveFinished(holder)
-            }
-        })
-        fadeOut.start()
+        view.translationY = 0f
+        view.alpha = 1f
+        view.animate().translationY(-view.height.toFloat())//.alpha(0f)
+            .setDuration(duration)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    dispatchAddFinished(holder)
+                }
+            }).start()
         return true
     }
 
     override fun animateAdd(holder: RecyclerView.ViewHolder): Boolean {
         val view = holder.itemView
-        view.alpha = 0f // Set initial alpha to 0
-        val fadeIn = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f)
-        fadeIn.setDuration(duration) // Duration for fade in
-        fadeIn.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                dispatchAddFinished(holder)
-            }
-        })
-        fadeIn.start()
+        holder.itemView.translationY = -view.height.toFloat()
+        holder.itemView.translationZ = -view.height.toFloat()
+        view.animate().translationY(0f).translationZ(0f)
+            .setDuration(duration)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    dispatchRemoveFinished(holder)
+                }
+            }).start()
         return true
     }
 

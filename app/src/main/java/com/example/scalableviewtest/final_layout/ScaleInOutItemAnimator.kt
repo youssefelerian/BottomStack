@@ -1,39 +1,40 @@
 package com.example.scalableviewtest.final_layout
 
-
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 
-class FadeInFadeOutItemAnimator : SimpleItemAnimator() {
+class ScaleInOutItemAnimator : SimpleItemAnimator() {
+
     private val duration = 250L
+
     override fun animateRemove(holder: RecyclerView.ViewHolder): Boolean {
         val view = holder.itemView
-        val fadeOut = ObjectAnimator.ofFloat(view, "alpha", 1f, 0f)
-        fadeOut.setDuration(duration) // Duration for fade out
-        fadeOut.addListener(object : AnimatorListenerAdapter() {
+        val scaleY = ObjectAnimator.ofFloat(view, "scaleY", 1f, 0f)
+        scaleY.setDuration(duration) // Duration for scale out
+        scaleY.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
-                //view.alpha = 1f // Reset alpha
+              //  view.scaleY = 1f // Reset scale
                 dispatchRemoveFinished(holder)
             }
         })
-        fadeOut.start()
+        scaleY.start()
         return true
     }
 
     override fun animateAdd(holder: RecyclerView.ViewHolder): Boolean {
         val view = holder.itemView
-        view.alpha = 0f // Set initial alpha to 0
-        val fadeIn = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f)
-        fadeIn.setDuration(duration) // Duration for fade in
-        fadeIn.addListener(object : AnimatorListenerAdapter() {
+        view.scaleY = 0f // Set initial scale to 0
+        val scaleY = ObjectAnimator.ofFloat(view, "scaleY", 0f, 1f)
+        scaleY.setDuration(duration) // Duration for scale in
+        scaleY.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
                 dispatchAddFinished(holder)
             }
         })
-        fadeIn.start()
+        scaleY.start()
         return true
     }
 

@@ -352,6 +352,7 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
 
 
     fun changeRecyclerHeight(slideOffset: Float) {
+        recyclerView.adapter?.notifyItemChanged(totalVisibleItemCount)
         val scale = 1f - slideOffset
         val newHeight = (recyclerViewDefaultHeight * scale).toInt()
         changeRecyclerViewHeight(scale, newHeight)
