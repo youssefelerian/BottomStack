@@ -16,7 +16,7 @@ class ScaleInOutItemAnimator : SimpleItemAnimator() {
         scaleY.setDuration(duration) // Duration for scale out
         scaleY.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
-              //  view.scaleY = 1f // Reset scale
+                //  view.scaleY = 1f // Reset scale
                 dispatchRemoveFinished(holder)
             }
         })

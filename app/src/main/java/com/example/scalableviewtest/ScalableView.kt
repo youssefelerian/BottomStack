@@ -2,22 +2,15 @@ package com.example.scalableviewtest
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewTreeObserver
 import android.widget.FrameLayout
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.scalableviewtest.adapter.ItemsAdapter
 import com.example.scalableviewtest.databinding.XischeBottomsheetBinding
 import com.example.scalableviewtest.final_layout.BottomStackLayoutManager
-import com.example.scalableviewtest.final_layout.BottomStackLayoutManager.Companion.TAG
 import com.example.scalableviewtest.final_layout.FadeInFadeOutItemAnimator
-import com.example.scalableviewtest.final_layout.ScaleInOutItemAnimator
-import com.example.scalableviewtest.final_layout.SlideInOutItemAnimator
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HALF_EXPANDED
 
 
 class ScalableView @JvmOverloads constructor(

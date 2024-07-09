@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.scalableviewtest.R
-import com.example.scalableviewtest.databinding.ActionViewBinding
 import com.example.scalableviewtest.adapter.model.ItemsModel
+import com.example.scalableviewtest.databinding.ActionViewBinding
 
 
 class ItemsAdapter : RecyclerView.Adapter<ItemsAdapter.ViewHolder>() {
