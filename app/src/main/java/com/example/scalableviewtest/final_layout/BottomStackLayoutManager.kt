@@ -311,7 +311,7 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
             child.scaleY = scaleFactor
             child.z = -rateInit * (positionInStackCount + 1)
             //to solve appear item behind
-            if (isAlpha || scaleFactor < 0.7f) {
+            if (isAlpha) {
                 val alphaRate = 1 - rateInit * rateInit
                 child.alpha = alphaRate
             }
