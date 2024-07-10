@@ -41,8 +41,7 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
     private var maxScroll = -1
 
     override fun onAdapterChanged(
-        oldAdapter: RecyclerView.Adapter<*>?,
-        newAdapter: RecyclerView.Adapter<*>?
+        oldAdapter: RecyclerView.Adapter<*>?, newAdapter: RecyclerView.Adapter<*>?
     ) {
         super.onAdapterChanged(oldAdapter, newAdapter)
         this.adapter = newAdapter
@@ -77,9 +76,7 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
     }
 
     override fun scrollVerticallyBy(
-        dy: Int,
-        recycler: RecyclerView.Recycler?,
-        state: RecyclerView.State
+        dy: Int, recycler: RecyclerView.Recycler?, state: RecyclerView.State
     ): Int {
         if (itemCount == 0 || dy == 0) {
             return 0
@@ -93,7 +90,7 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
         scroll += travel
 
         if (!state.isPreLayout && childCount > 0) {
-            layoutItemsOnScroll()
+            layoutItemsOnScroll(bottomStackCount = stackCount, scroll = scroll)
         }
         return travel
     }
@@ -114,9 +111,7 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
                 recycler?.getViewForPosition(i)?.let { itemView ->
                     addView(itemView)
                     measureChildWithMargins(
-                        itemView,
-                        View.MeasureSpec.UNSPECIFIED,
-                        View.MeasureSpec.UNSPECIFIED
+                        itemView, View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED
                     )
                     itemHeight = getDecoratedMeasuredHeight(itemView)
                     viewTypeHeightMap[viewType] = itemHeight
@@ -164,18 +159,23 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
     private fun layoutItemsOnCreate(recycler: RecyclerView.Recycler) {
         val itemCount = itemCount
         val displayRect = Rect(0, scroll, width, height + scroll)
-        for (i in 0 until itemCount) {
-            val thisRect: Rect = locationRects[i]
+        for (pos in 0 until itemCount) {
+            val thisRect: Rect = locationRects[pos]
             if (Rect.intersects(displayRect, thisRect)) {
-                val childView = recycler.getViewForPosition(i)
+                val childView = recycler.getViewForPosition(pos)
                 addView(childView)
                 measureChildWithMargins(
-                    childView,
-                    View.MeasureSpec.UNSPECIFIED,
-                    View.MeasureSpec.UNSPECIFIED
+                    childView, View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED
                 )
-                layoutItem(childView, locationRects[i], i)
-                attachedItems.put(i, true)
+                layoutItem(
+                    childView,
+                    locationRects[pos],
+                    pos,
+                    bottomStackCount = stackCount,
+                    scroll = scroll,
+                    null
+                )
+                attachedItems.put(pos, true)
                 childView.pivotY = 0f
                 childView.pivotX = (childView.measuredWidth / 2).toFloat()
                 if (thisRect.top - scroll > height) {
@@ -186,7 +186,9 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
         }
     }
 
-    private fun layoutItemsOnScroll() {
+    private fun layoutItemsOnScroll(
+        bottomStackCount: Int, scroll: Int, isSlideAnimate: Boolean? = null
+    ) {
         val childCount = childCount
         val itemCount = itemCount
         val displayRect = Rect(0, scroll, width, height + scroll)
@@ -211,26 +213,39 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
                     min(firstVisiblePosition.toDouble(), position.toDouble()).toInt()
                 }
 
-                layoutItem(child, locationRects[position], position)
+                layoutItem(
+                    child,
+                    locationRects[position],
+                    position = position,
+                    bottomStackCount = bottomStackCount,
+                    scroll = scroll,
+                    isSlideAnimate
+                )
             }
         }
 
         if (firstVisiblePosition > 0) {
 
-            for (i in firstVisiblePosition - 1 downTo 0) {
-                if (Rect.intersects(displayRect, locationRects[i]) &&
-                    !attachedItems[i]
-                ) {
-                    reuseItemOnSroll(i, true)
+            for (pos in firstVisiblePosition - 1 downTo 0) {
+                if (Rect.intersects(displayRect, locationRects[pos]) && !attachedItems[pos]) {
+                    reuseItemOnSroll(
+                        pos,
+                        true,
+                        bottomStackCount = bottomStackCount,
+                        scroll = scroll,
+                        isSlideAnimate
+                    )
                 } else {
                     break
                 }
             }
         }
 
-        for (i in lastVisiblePosition + 1 until itemCount) {
-            if (Rect.intersects(displayRect, locationRects[i]) && !attachedItems[i]) {
-                reuseItemOnSroll(i, false)
+        for (pos in lastVisiblePosition + 1 until itemCount) {
+            if (Rect.intersects(displayRect, locationRects[pos]) && !attachedItems[pos]) {
+                reuseItemOnSroll(
+                    pos, false, bottomStackCount = bottomStackCount, scroll = scroll, isSlideAnimate
+                )
             } else {
                 break
             }
@@ -238,7 +253,13 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
 
     }
 
-    private fun reuseItemOnSroll(position: Int, addViewFromTop: Boolean) {
+    private fun reuseItemOnSroll(
+        position: Int,
+        addViewFromTop: Boolean,
+        bottomStackCount: Int,
+        scroll: Int,
+        isSlideAnimate: Boolean?
+    ) {
         recycler?.getViewForPosition(position)?.let { scrap ->
             measureChildWithMargins(scrap, 0, 0)
             scrap.pivotY = 0f
@@ -250,19 +271,34 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
                 addView(scrap)
             }
 
-            layoutItem(scrap, locationRects[position], position)
+            layoutItem(
+                scrap,
+                locationRects[position],
+                position = position,
+                bottomStackCount = bottomStackCount,
+                scroll = scroll,
+                isSlideAnimate
+            )
             attachedItems.put(position, true)
         }
     }
 
 
-    private fun layoutItem(child: View, rect: Rect, position: Int) {
+    private fun layoutItem(
+        child: View,
+        rect: Rect,
+        position: Int,
+        bottomStackCount: Int,
+        scroll: Int,
+        isSlideAnimate: Boolean?
+    ) {
         val layoutScrollTop = rect.top - scroll
         val layoutScrollBottom = rect.bottom - scroll
         val itemHeight: Int = rect.bottom - rect.top
-        val totalItemCount = totalVisibleItemCount - stackCount
+        val totalItemCount = totalVisibleItemCount - bottomStackCount
         val isPositionsNotEqualZero = position > 0 && totalItemCount > 0
-        val layoutTopPositionArray = getLayoutTopPositionArray(itemHeight)
+        val layoutTopPositionArray =
+            getLayoutTopPositionArray(itemHeight, bottomStackCount = bottomStackCount)
         val minLayoutTopPosition = layoutTopPositionArray.minOrNull()
 
         val layoutTop: Int
@@ -270,13 +306,13 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
 
         if (isPositionsNotEqualZero && position >= totalItemCount && (minLayoutTopPosition != null && layoutScrollTop >= minLayoutTopPosition)) {
             val layoutTopNeed = getLayoutTopPosition(layoutScrollTop, layoutTopPositionArray)
-            val heightRate =
-                scaleLayoutItem(
-                    child = child,
-                    layoutTopNeedPair = layoutTopNeed,
-                    layoutScrollTop = layoutScrollTop,
-                    itemHeight = itemHeight
-                )
+            val heightRate = scaleLayoutItem(
+                child = child,
+                layoutTopNeedPair = layoutTopNeed,
+                layoutScrollTop = layoutScrollTop,
+                itemHeight = itemHeight,
+                bottomStackCount = bottomStackCount
+            )
 
             layoutTop = layoutScrollTop - heightRate
             layoutBottom = layoutScrollBottom - heightRate
@@ -293,11 +329,12 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
         child: View,
         layoutTopNeedPair: Pair<Int, Int>?,
         layoutScrollTop: Int,
-        itemHeight: Int
+        itemHeight: Int,
+        bottomStackCount: Int
     ): Int {
         if (layoutTopNeedPair != null) {
             val layoutTopNeed = layoutTopNeedPair.second
-            val positionInStackCount = abs(layoutTopNeedPair.first - stackCount)
+            val positionInStackCount = abs(layoutTopNeedPair.first - bottomStackCount)
             val rateInit = (layoutScrollTop - layoutTopNeed).toFloat() / itemHeight.toFloat()
             val scaleFactor = (1 - rateInit * rateInit / 3) - (positionInStackCount.toFloat() / 10f)
             val heightRate = (rateInit * itemHeight.toFloat()).toInt()
@@ -316,8 +353,7 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
     }
 
     private fun getLayoutTopPosition(
-        layoutScrollTop: Int,
-        layoutTopPositionArray: List<Int>
+        layoutScrollTop: Int, layoutTopPositionArray: List<Int>
     ): Pair<Int, Int>? {
         layoutTopPositionArray.forEachIndexed { index, layoutTopPosition ->
             if (layoutScrollTop >= layoutTopPosition) {
@@ -327,9 +363,9 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
         return null
     }
 
-    private fun getLayoutTopPositionArray(itemHeight: Int): List<Int> {
+    private fun getLayoutTopPositionArray(itemHeight: Int, bottomStackCount: Int): List<Int> {
         val layoutTopPosition = mutableListOf<Int>()
-        for (index in 1..stackCount) {
+        for (index in 1..bottomStackCount) {
             val layoutTopNeed = (itemHeight * (totalVisibleItemCount - index)) - (itemHeight / 2)
             layoutTopPosition.add(layoutTopNeed)
         }
@@ -353,14 +389,13 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
         val scale = 1f - slideOffset
         val newHeight = (recyclerViewChangeHeight * scale).toInt()
         val items =
-            ceil((recyclerViewChangeHeight.toDouble() - newHeight.toDouble()) / itemHeight)
-                .toInt()
+            ceil((recyclerViewChangeHeight.toDouble() - newHeight.toDouble()) / itemHeight).toInt()
 
-        /* layoutItemsOnScrollTop(
-             bottomStackCount = if (items <= 0) 1 else items,
-             scroll = scroll,
-             isSlideAnimate = lastOffset > slideOffset
-         )*/
+        layoutItemsOnScroll(
+            bottomStackCount = if (items <= 0) 1 else items,
+            scroll = scroll,
+            isSlideAnimate = lastOffset > slideOffset
+        )
         lastOffset = slideOffset
     }
 
