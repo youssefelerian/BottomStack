@@ -8,6 +8,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.abs
+import kotlin.math.ceil
 import kotlin.math.min
 
 
@@ -20,24 +21,24 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
     LinearLayoutManager(recyclerView.context) {
 
     private val stackCount: Int = 1
-    private val isAlpha: Boolean = false
+    private val isAlpha: Boolean = true
 
     init {
         orientation = RecyclerView.VERTICAL
     }
 
     private var recyclerViewChangeHeight = 0
-    private var recyclerViewDefaultHeight = 0
-    private var scroll = 0
     private val locationRects: SparseArray<Rect> = SparseArray<Rect>()
     private val attachedItems = SparseBooleanArray()
     private val viewTypeHeightMap: ArrayMap<Int, Int> = ArrayMap()
 
-    private var maxScroll = -1
     private var adapter: RecyclerView.Adapter<*>? = null
     private var recycler: RecyclerView.Recycler? = null
     private var totalVisibleItemCount = 0
     private var itemHeight = 0
+
+    private var scroll = 0
+    private var maxScroll = -1
 
     override fun onAdapterChanged(
         oldAdapter: RecyclerView.Adapter<*>?,
@@ -57,10 +58,6 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
             measureChildWithMargins(anchorView, 0, 0)
             itemHeight = anchorView.measuredHeight
             recyclerViewChangeHeight = recyclerView.height
-
-            if (recyclerViewDefaultHeight == 0) {
-                recyclerViewDefaultHeight = recyclerView.height
-            }
             if (itemHeight > 0 && recyclerViewChangeHeight > 0) {
                 totalVisibleItemCount =
                     (recyclerViewChangeHeight.toFloat() / itemHeight.toFloat()).toInt() + 1
@@ -181,9 +178,6 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
                 attachedItems.put(i, true)
                 childView.pivotY = 0f
                 childView.pivotX = (childView.measuredWidth / 2).toFloat()
-                /*if (i > totalVisibleItemCount) {
-                    totalVisibleItemCount = i
-                }*/
                 if (thisRect.top - scroll > height) {
                     break
                 }
@@ -310,7 +304,6 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
             child.scaleX = scaleFactor
             child.scaleY = scaleFactor
             child.z = -rateInit * (positionInStackCount + 1)
-            //to solve appear item behind
             if (isAlpha) {
                 val alphaRate = 1 - rateInit * rateInit
                 child.alpha = alphaRate
@@ -351,17 +344,24 @@ class BottomStackLayoutManager(private val recyclerView: RecyclerView) :
     }
 
 
-    fun changeRecyclerHeight(slideOffset: Float) {
-        recyclerView.adapter?.notifyItemChanged(totalVisibleItemCount)
-        val scale = 1f - slideOffset
-        val newHeight = (recyclerViewDefaultHeight * scale).toInt()
-        changeRecyclerViewHeight(scale, newHeight)
-    }
+    private var lastOffset = 0f
+    fun changeSize(slideOffset: Float) {
+        if (itemCount == 0) {
+            return
+        }
 
-    private fun changeRecyclerViewHeight(scale: Float, newHeight: Int) {
-        val params = recyclerView.layoutParams
-        if (scale > 0.2f) params.height = newHeight
-        recyclerView.layoutParams = params
+        val scale = 1f - slideOffset
+        val newHeight = (recyclerViewChangeHeight * scale).toInt()
+        val items =
+            ceil((recyclerViewChangeHeight.toDouble() - newHeight.toDouble()) / itemHeight)
+                .toInt()
+
+        /* layoutItemsOnScrollTop(
+             bottomStackCount = if (items <= 0) 1 else items,
+             scroll = scroll,
+             isSlideAnimate = lastOffset > slideOffset
+         )*/
+        lastOffset = slideOffset
     }
 
     companion object {

@@ -32,12 +32,26 @@ class ScalableView @JvmOverloads constructor(
             override fun onStateChanged(bottomSheet: View, newState: Int) {}
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                lm?.changeRecyclerHeight(slideOffset)
+             //   lm?.changeRecyclerHeight(slideOffset)
+                lm?.changeSize(slideOffset)
             }
 
         })
 
     }
+
+   /* fun changeRecyclerHeight(slideOffset: Float) {
+        recyclerView.adapter?.notifyItemChanged(totalVisibleItemCount)
+        val scale = 1f - slideOffset
+        val newHeight = (recyclerViewDefaultHeight * scale).toInt()
+        changeRecyclerViewHeight(scale, newHeight)
+    }
+
+    private fun changeRecyclerViewHeight(scale: Float, newHeight: Int) {
+        val params = recyclerView.layoutParams
+        if (scale > 0.2f) params.height = newHeight
+        recyclerView.layoutParams = params
+    }*/
 
     private fun setupBottomSheetInitialState(recyclerView: RecyclerView) = binding?.run {
         /* recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
@@ -62,7 +76,7 @@ class ScalableView @JvmOverloads constructor(
     fun setAdapter(adapter: ItemsAdapter) = binding?.rv?.let {
         lm = BottomStackLayoutManager(it)
         it.adapter = adapter
-        it.itemAnimator = FadeInFadeOutItemAnimator()
+       // it.itemAnimator = SlideInOutItemAnimator()
         it.layoutManager = lm
         setupBottomSheetInitialState(it)
     }
